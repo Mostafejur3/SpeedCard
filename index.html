@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SpeedCards | Elite Flashcard System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+</head>
+<body data-theme="light">
+
+<div class="app">
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" id="menuToggle">
+        <span></span><span></span><span></span>
+    </button>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Main Card Area - Full Screen -->
+    <main class="card-area">
+        <div class="glass-overlay"></div>
+        <div class="flashcard" id="flashcard">
+            <div class="card-header-badges">
+                <span class="card-id-badge" id="cardIdBadge">#001</span>
+                <button class="bookmark-icon" id="bookmarkBtn" title="Bookmark">☆</button>
+            </div>
+            <div class="chinese-word" id="chineseWord">你好</div>
+            <div class="details-area" id="detailsArea"></div>
+        </div>
+
+        <!-- Navigation Icons -->
+        <div class="nav-icons">
+            <button class="nav-icon" id="prevBtn">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="nav-icon" id="nextBtn">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+        </div>
+        
+        <!-- Current Mode Indicator -->
+        <div class="mode-indicator" id="modeIndicator">📖 Practice Mode</div>
+    </main>
+
+    <!-- Sidebar - Slide-out Menu -->
+    <aside class="sidebar" id="sidebar">
+        <!-- Header -->
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">⚡</div>
+                <div class="logo-text">Speed<span>Cards</span></div>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle" title="Dark/Light Mode">🌙</button>
+                <button class="close-menu" id="closeMenu">✕</button>
+            </div>
+        </div>
+
+        <!-- Mission Mode Toggle -->
+        <div class="mission-toggle-container">
+            <label class="mission-toggle-label">
+                <input type="checkbox" id="missionModeToggle">
+                <span class="mission-toggle-slider"></span>
+                <span class="mission-toggle-text">🎯 Mission Mode (Record Stats)</span>
+            </label>
+        </div>
+
+        <!-- Mission Stats (only visible in mission mode) -->
+        <div class="mission-stats" id="missionStats" style="display: none;">
+            <div class="stat-row">
+                <span>⏱️ Mission Time</span>
+                <span class="stat-value-highlight" id="missionTimer">0.00</span>
+            </div>
+            <div class="stat-row">
+                <span>⚡ Card Time</span>
+                <span id="cardTimer">0.00</span>
+            </div>
+            <div class="stat-row">
+                <span>📊 Progress</span>
+                <span id="cardProgress">0 / 0</span>
+            </div>
+            <div class="mission-actions">
+                <button class="btn-pause" id="pauseMissionBtn">⏸️ Pause</button>
+                <button class="btn-complete" id="completeMissionBtn">✅ Finish</button>
+            </div>
+        </div>
+
+        <!-- Configuration Section -->
+        <div class="config-section">
+            <div class="section-header">
+                <h3>⚙️ Configuration</h3>
+            </div>
+            
+            <!-- Random Toggle -->
+            <div class="random-toggle">
+                <label class="switch-label">
+                    <input type="checkbox" id="randomOrderToggle">
+                    <span class="switch-slider"></span>
+                    <span class="switch-text">🎲 Random Order Mode</span>
+                </label>
+            </div>
+            
+            <!-- Mission Customizer -->
+            <div class="mission-customizer" id="missionCustomizer">
+                <div class="customizer-header">
+                    <h3>📋 Card Selection</h3>
+                </div>
+                
+                <div class="customizer-tabs">
+                    <button class="customizer-tab active" data-custom-tab="range">📊 Range</button>
+                    <button class="customizer-tab" data-custom-tab="list">📝 Custom</button>
+                    <button class="customizer-tab" data-custom-tab="smart">🧠 Smart</button>
+                </div>
+                
+                <div class="customizer-panel active" id="rangeTab">
+                    <div class="input-group">
+                        <label>From ID</label>
+                        <input type="number" id="rangeStart" placeholder="1" min="1" value="1">
+                    </div>
+                    <div class="input-group">
+                        <label>To ID</label>
+                        <input type="number" id="rangeEnd" placeholder="622" min="1" value="100">
+                    </div>
+                    <div class="preset-ranges">
+                        <button class="preset-range" data-start="1" data-end="50">1-50</button>
+                        <button class="preset-range" data-start="51" data-end="200">51-200</button>
+                        <button class="preset-range" data-start="1" data-end="622">All (1-622)</button>
+                        <button class="preset-range" data-start="1" data-end="100">1-100</button>
+                    </div>
+                </div>
+                
+                <div class="customizer-panel" id="listTab">
+                    <div class="input-group">
+                        <label>Custom IDs (comma/space)</label>
+                        <textarea id="customIdsList" rows="3" placeholder="1, 5, 6, 101, 103"></textarea>
+                    </div>
+                    <button class="quick-btn" id="quickBookmarkBtn">⭐ All Bookmarked</button>
+                </div>
+                
+                <div class="customizer-panel" id="smartTab">
+                    <div class="filter-group">
+                        <label>⏱️ Time Based</label>
+                        <div class="filter-buttons">
+                            <button class="smart-filter" data-filter="time_gt_0.5">&gt;0.5s</button>
+                            <button class="smart-filter" data-filter="time_gt_1">&gt;1s</button>
+                            <button class="smart-filter" data-filter="time_lt_0.03">&lt;0.03s</button>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>👁️ Practice Count</label>
+                        <div class="filter-buttons">
+                            <button class="smart-filter" data-filter="view_lt_5">&lt;5 times</button>
+                            <button class="smart-filter" data-filter="view_lt_3">&lt;3 times</button>
+                            <button class="smart-filter" data-filter="view_eq_0">Unseen</button>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>🏆 Performance</label>
+                        <div class="filter-buttons">
+                            <button class="smart-filter" data-filter="most_slow">Slowest 20</button>
+                            <button class="smart-filter" data-filter="most_speedy">Fastest 20</button>
+                            <button class="smart-filter" data-filter="needs_practice">Needs Practice</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn-apply-config" id="applyConfigBtn">Apply Configuration →</button>
+            </div>
+        </div>
+
+        <!-- Mission History -->
+        <div class="history-section">
+            <div class="section-header">
+                <h3>📜 Mission History</h3>
+                <button class="clear-history-icon" id="clearAllHistoryBtn" title="Clear All">🗑️</button>
+            </div>
+            <div class="history-list" id="historyList">
+                <div class="empty-history">No missions yet</div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<!-- Reset Modal (simplified) -->
+<div id="resetModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-icon">⚠️</div>
+        <h3>Clear History?</h3>
+        <p>All mission history will be permanently deleted.</p>
+        <div class="modal-buttons">
+            <button class="modal-btn cancel" id="cancelResetBtn">Cancel</button>
+            <button class="modal-btn confirm" id="confirmResetBtn">Clear</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
