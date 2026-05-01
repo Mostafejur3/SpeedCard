@@ -11,120 +11,57 @@ body {
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Light Theme */
+/* Light Theme - Soft Colors */
 body[data-theme="light"] {
-    background: #f5f7fb;
-    color: #1a1a2e;
-}
-
-body[data-theme="light"] .sidebar {
-    background: rgba(255,255,255,0.98);
+    background: #f0f4f8;
     color: #1a1a2e;
 }
 
 body[data-theme="light"] .card-area {
-    background: linear-gradient(145deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(145deg, #e8eef4 0%, #dce5ed 100%);
 }
 
 body[data-theme="light"] .flashcard {
-    background: rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.92);
     color: #1a1a2e;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 0 0 1px rgba(102,126,234,0.15);
 }
 
 body[data-theme="light"] .flashcard .chinese-word {
     color: #2c3e50;
 }
 
-body[data-theme="light"] .mission-customizer,
-body[data-theme="light"] .mission-stats,
-body[data-theme="light"] .history-item {
-    background: rgba(102,126,234,0.08);
-    border: 1px solid rgba(102,126,234,0.15);
+body[data-theme="light"] .mode-indicator {
+    background: rgba(0,0,0,0.6);
+    color: white;
 }
 
-body[data-theme="light"] .config-section {
-    background: rgba(102,126,234,0.05);
+body[data-theme="light"] .hamburger-menu span {
+    background: #4a5568;
 }
 
-body[data-theme="light"] .input-group input,
-body[data-theme="light"] .input-group textarea,
-body[data-theme="light"] .search-box input {
-    background: white;
-    border: 1px solid rgba(0,0,0,0.1);
-    color: #1a1a2e;
-}
-
-/* Dark Theme */
+/* Dark Theme - Soft Colors */
 body[data-theme="dark"] {
-    background: #0a0a1a;
-    color: #e0e0e0;
-}
-
-body[data-theme="dark"] .sidebar {
-    background: rgba(18,18,35,0.98);
+    background: #121826;
     color: #e0e0e0;
 }
 
 body[data-theme="dark"] .card-area {
-    background: linear-gradient(145deg, #1a1a3e 0%, #0f0f2a 100%);
+    background: linear-gradient(145deg, #1a1f2e 0%, #131725 100%);
 }
 
 body[data-theme="dark"] .flashcard {
-    background: rgba(30,30,55,0.95);
+    background: rgba(30,35,50,0.92);
     color: #e0e0e0;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(102,126,234,0.2);
 }
 
 body[data-theme="dark"] .flashcard .chinese-word {
     color: #ffffff;
 }
 
-body[data-theme="dark"] .mission-customizer,
-body[data-theme="dark"] .mission-stats,
-body[data-theme="dark"] .history-item {
-    background: rgba(25,25,45,0.8);
-    border: 1px solid rgba(255,255,255,0.08);
-}
-
-body[data-theme="dark"] .config-section {
-    background: rgba(25,25,45,0.5);
-}
-
-body[data-theme="dark"] .input-group input,
-body[data-theme="dark"] .input-group textarea,
-body[data-theme="dark"] .search-box input {
-    background: rgba(30,30,55,0.8);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #e0e0e0;
-}
-
-body[data-theme="dark"] .input-group input::placeholder,
-body[data-theme="dark"] .input-group textarea::placeholder {
-    color: #888;
-}
-
-body[data-theme="dark"] .customizer-tab,
-body[data-theme="dark"] .preset-range,
-body[data-theme="dark"] .quick-btn,
-body[data-theme="dark"] .smart-filter {
-    background: rgba(102,126,234,0.15);
-    color: #e0e0e0;
-}
-
-body[data-theme="dark"] .customizer-tab.active {
-    background: #667eea;
-    color: white;
-}
-
-body[data-theme="dark"] .history-date {
-    color: #9b59b6;
-}
-
-body[data-theme="dark"] .stat-value-highlight {
-    color: #9b59b6;
-}
-
-body[data-theme="dark"] .section-header h3 {
-    color: #aaa;
+body[data-theme="dark"] .hamburger-menu span {
+    background: #e0e0e0;
 }
 
 /* App Layout */
@@ -134,8 +71,8 @@ body[data-theme="dark"] .section-header h3 {
     position: relative;
 }
 
-/* Menu Toggle Button (Mobile) */
-.menu-toggle {
+/* Hamburger Menu Button (3 lines) */
+.hamburger-menu {
     position: fixed;
     top: 20px;
     left: 20px;
@@ -146,23 +83,51 @@ body[data-theme="dark"] .section-header h3 {
     width: 50px;
     height: 50px;
     border-radius: 25px;
-    display: none;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
 }
 
-.menu-toggle span {
+.hamburger-menu:hover {
+    transform: scale(1.02);
+    background: rgba(255,255,255,0.3);
+}
+
+.hamburger-menu span {
     width: 24px;
-    height: 2px;
-    background: white;
+    height: 2.5px;
     border-radius: 2px;
     transition: 0.2s;
 }
 
+/* Sidebar - Slide-out from left */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 85%;
+    max-width: 380px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 20px;
+    gap: 20px;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 99;
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+/* Menu Overlay */
 .menu-overlay {
     position: fixed;
     top: 0;
@@ -181,22 +146,8 @@ body[data-theme="dark"] .section-header h3 {
     opacity: 1;
 }
 
-/* Sidebar - Desktop */
-.sidebar {
-    width: 380px;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    padding: 20px;
-    gap: 20px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 99;
-    height: 100vh;
-}
-
 /* Close Menu Button */
 .close-menu {
-    display: none;
     background: none;
     border: none;
     font-size: 1.2rem;
@@ -205,7 +156,7 @@ body[data-theme="dark"] .section-header h3 {
     border-radius: 8px;
 }
 
-/* Card Area - Full Screen */
+/* Card Area - FULL SCREEN */
 .card-area {
     flex: 1;
     display: flex;
@@ -216,6 +167,7 @@ body[data-theme="dark"] .section-header h3 {
     position: relative;
     overflow: hidden;
     min-height: 100vh;
+    width: 100%;
 }
 
 .card-area::before {
@@ -225,52 +177,53 @@ body[data-theme="dark"] .section-header h3 {
     height: 200%;
     top: -50%;
     left: -50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
-    background-size: 50px 50px;
-    animation: drift 60s linear infinite;
+    background: radial-gradient(circle, rgba(102,126,234,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: drift 40s linear infinite;
     pointer-events: none;
 }
 
 @keyframes drift {
     0% { transform: translate(0, 0); }
-    100% { transform: translate(50px, 50px); }
+    100% { transform: translate(60px, 60px); }
 }
 
 .glass-overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.05), transparent);
+    background: radial-gradient(ellipse at 50% 40%, rgba(255,255,255,0.03), transparent);
     pointer-events: none;
 }
 
 /* Mode Indicator */
 .mode-indicator {
     position: absolute;
-    bottom: 20px;
+    bottom: 25px;
     right: 30px;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(8px);
-    padding: 8px 16px;
-    border-radius: 30px;
-    font-size: 0.8rem;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-size: 0.85rem;
     font-weight: 500;
     color: white;
     pointer-events: none;
+    z-index: 10;
+    letter-spacing: 0.5px;
 }
 
-/* Flashcard */
+/* Flashcard - BIG AND IMPRESSIVE */
 .flashcard {
-    border-radius: 48px;
-    padding: 60px 40px;
+    border-radius: 64px;
+    padding: 80px 50px;
     width: 90%;
-    max-width: 1000px;
-    min-height: 60vh;
+    max-width: 1200px;
+    min-height: 65vh;
     text-align: center;
-    box-shadow: 0 30px 50px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    backdrop-filter: blur(10px);
-    animation: cardFloat 0.5s ease;
+    backdrop-filter: blur(8px);
+    animation: cardFloat 0.4s ease;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -280,7 +233,7 @@ body[data-theme="dark"] .section-header h3 {
 @keyframes cardFloat {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(25px);
     }
     to {
         opacity: 1;
@@ -289,26 +242,26 @@ body[data-theme="dark"] .section-header h3 {
 }
 
 .flashcard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 40px 60px rgba(0,0,0,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 30px 50px rgba(0,0,0,0.12);
 }
 
 .card-header-badges {
     position: absolute;
-    top: 24px;
-    left: 28px;
-    right: 28px;
+    top: 28px;
+    left: 32px;
+    right: 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .card-id-badge {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-family: 'Monaco', 'Menlo', monospace;
     background: rgba(102,126,234,0.2);
-    padding: 6px 14px;
-    border-radius: 30px;
+    padding: 6px 16px;
+    border-radius: 40px;
     font-weight: 500;
     letter-spacing: 0.5px;
 }
@@ -316,61 +269,70 @@ body[data-theme="dark"] .section-header h3 {
 .bookmark-icon {
     background: none;
     border: none;
-    font-size: 1.8rem;
+    font-size: 2rem;
     cursor: pointer;
-    color: #ffc107;
+    color: #f1c40f;
     transition: 0.2s;
     padding: 0;
     line-height: 1;
+    opacity: 0.8;
 }
 
 .bookmark-icon:hover {
-    transform: scale(1.1);
+    opacity: 1;
+    transform: scale(1.08);
 }
 
 /* LARGER CHINESE TEXT - Desktop */
 .chinese-word {
     font-family: 'SimSun', '宋体', 'Noto Serif SC', serif;
-    font-size: 6rem;
+    font-size: 15rem;
     font-weight: 700;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
     line-height: 1.2;
-    letter-spacing: 8px;
+    letter-spacing: 10px;
 }
 
 .details-area {
-    min-height: 140px;
+    min-height: 160px;
 }
 
 .details-area .pinyin {
-    font-size: 1.8rem;
+    font-size: 2rem;
     color: #e67e22;
     font-weight: 500;
-    margin: 20px 0;
-    letter-spacing: 1px;
+    margin: 25px 0;
+    letter-spacing: 2px;
 }
 
 .details-area .meaning {
-    font-size: 1.6rem;
-    background: rgba(39, 174, 96, 0.15);
+    font-size: 1.8rem;
+    background: rgba(39, 174, 96, 0.12);
     display: inline-block;
-    padding: 12px 32px;
+    padding: 14px 36px;
     border-radius: 60px;
     font-weight: 500;
 }
-
 /* Navigation Icons */
 .nav-icons {
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 30px;
-    margin-top: 40px;
+    margin-top: 50px;
+}
+
+.nav-center-group {
+    display: flex;
+    gap: 30px;
+    align-items: center;
 }
 
 .nav-icon {
-    background: rgba(255,255,255,0.15);
+    background: rgba(102,126,234,0.15);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 16px 40px;
+    border: 1px solid rgba(102,126,234,0.25);
+    padding: 18px 32px;
     border-radius: 60px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -380,14 +342,53 @@ body[data-theme="dark"] .section-header h3 {
 }
 
 .nav-icon svg {
-    width: 26px;
-    height: 26px;
-    stroke: white;
+    width: 28px;
+    height: 28px;
+    stroke: currentColor;
+}
+
+/* Bookmark navigation button */
+.bookmark-nav {
+    min-width: 70px;
+}
+
+.bookmark-star {
+    font-size: 2rem;
+    line-height: 1;
+    color: #f1c40f;
+    transition: 0.2s;
 }
 
 .nav-icon:hover {
-    background: rgba(255,255,255,0.25);
+    background: rgba(102,126,234,0.25);
     transform: scale(1.02);
+}
+
+.nav-icon:hover .bookmark-star {
+    transform: scale(1.1);
+    display: inline-block;
+}
+
+body[data-theme="light"] .nav-icon svg {
+    stroke: #4a5568;
+}
+
+body[data-theme="dark"] .nav-icon svg {
+    stroke: #e0e0e0;
+}
+/* Keyboard hint */
+.keyboard-hint {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(8px);
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.8);
+    font-family: monospace;
+    pointer-events: none;
 }
 
 /* Sidebar Content Styles */
@@ -793,7 +794,7 @@ body[data-theme="dark"] .section-header h3 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.5);
     backdrop-filter: blur(8px);
     justify-content: center;
     align-items: center;
@@ -839,101 +840,93 @@ body[data-theme="dark"] .modal-btn.cancel {
 
 /* ========== MOBILE RESPONSIVE ========== */
 @media (max-width: 768px) {
-    .menu-toggle {
-        display: flex;
-    }
-    
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: -100%;
-        width: 85%;
-        max-width: 350px;
-        height: 100%;
-        border-radius: 0;
-        box-shadow: 0 0 30px rgba(0,0,0,0.3);
-    }
-    
-    .sidebar.open {
-        left: 0;
-    }
-    
-    .close-menu {
-        display: block;
-    }
-    
-    .card-area {
-        padding: 60px 16px 20px;
-    }
-    
     .flashcard {
-        padding: 40px 20px;
+        padding: 50px 25px;
         min-height: 55vh;
         width: 95%;
+        border-radius: 48px;
     }
     
-    /* LARGER CHINESE TEXT - Mobile */
     .chinese-word {
-        font-size: 3.5rem;
-        letter-spacing: 4px;
+        font-size: 6.5rem;
+        letter-spacing: 5px;
+        margin-bottom: 30px;
     }
     
     .details-area .pinyin {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
     }
     
     .details-area .meaning {
-        font-size: 1.1rem;
-        padding: 8px 20px;
+        font-size: 1.2rem;
+        padding: 10px 24px;
     }
     
     .nav-icon {
-        padding: 12px 30px;
+        padding: 14px 36px;
     }
     
     .nav-icon svg {
-        width: 22px;
-        height: 22px;
+        width: 24px;
+        height: 24px;
     }
     
     .mode-indicator {
-        bottom: 15px;
-        right: 15px;
+        bottom: 18px;
+        right: 18px;
         font-size: 0.7rem;
-        padding: 6px 12px;
+        padding: 6px 14px;
     }
     
     .card-id-badge {
-        font-size: 0.65rem;
-        padding: 4px 10px;
+        font-size: 0.7rem;
+        padding: 5px 12px;
     }
     
     .bookmark-icon {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
+    }
+    
+    .keyboard-hint {
+        bottom: 15px;
+        left: 15px;
+        font-size: 0.6rem;
+    }
+    
+    .hamburger-menu {
+        width: 44px;
+        height: 44px;
+        top: 15px;
+        left: 15px;
+    }
+    
+    .hamburger-menu span {
+        width: 20px;
+        height: 2px;
     }
 }
 
 @media (max-width: 480px) {
     .flashcard {
-        padding: 30px 16px;
+        padding: 40px 20px;
         min-height: 50vh;
     }
     
-    /* EVEN LARGER on small phones */
     .chinese-word {
         font-size: 2.8rem;
         letter-spacing: 3px;
     }
     
     .details-area .pinyin {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
     }
     
     .details-area .meaning {
         font-size: 1rem;
+        padding: 8px 20px;
     }
     
     .nav-icon {
-        padding: 10px 24px;
+        padding: 12px 28px;
     }
 }
