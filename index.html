@@ -10,9 +10,11 @@
 <body data-theme="light">
 
 <div class="app">
-    <!-- Mobile Menu Toggle -->
-    <button class="menu-toggle" id="menuToggle">
-        <span></span><span></span><span></span>
+    <!-- Hamburger Menu Button (3 lines) -->
+    <button class="hamburger-menu" id="hamburgerMenu">
+        <span></span>
+        <span></span>
+        <span></span>
     </button>
     <div class="menu-overlay" id="menuOverlay"></div>
 
@@ -20,22 +22,28 @@
     <main class="card-area">
         <div class="glass-overlay"></div>
         <div class="flashcard" id="flashcard">
+            <!-- Only card ID badge in header now -->
             <div class="card-header-badges">
                 <span class="card-id-badge" id="cardIdBadge">#001</span>
-                <button class="bookmark-icon" id="bookmarkBtn" title="Bookmark">☆</button>
+                <!-- Bookmark removed from here -->
             </div>
             <div class="chinese-word" id="chineseWord">你好</div>
             <div class="details-area" id="detailsArea"></div>
         </div>
 
-        <!-- Navigation Icons -->
+        <!-- Navigation Icons with Bookmark Button Next to Forward -->
         <div class="nav-icons">
             <button class="nav-icon" id="prevBtn">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
-            <button class="nav-icon" id="nextBtn">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-            </button>
+            <div class="nav-center-group">
+                <button class="nav-icon bookmark-nav" id="bookmarkBtn" title="Bookmark (Press 0)">
+                    <span class="bookmark-star">☆</span>
+                </button>
+                <button class="nav-icon" id="nextBtn">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+            </div>
         </div>
         
         <!-- Current Mode Indicator -->
