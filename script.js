@@ -41,6 +41,40 @@ const cardIdBadge = document.getElementById('cardIdBadge');
 const modeIndicator = document.getElementById('modeIndicator');
 const quickBookmarkBtn = document.getElementById('quickBookmarkBtn');
 
+// ========== HAMBURGER MENU (3 LINES) ==========
+const hamburgerMenu = document.getElementById('hamburgerMenu');
+const menuOverlay = document.getElementById('menuOverlay');
+const sidebar = document.getElementById('sidebar');
+const closeMenu = document.getElementById('closeMenu');
+
+function openSidebar() {
+    sidebar.classList.add('open');
+    menuOverlay.classList.add('active');
+}
+
+function closeSidebar() {
+    sidebar.classList.remove('open');
+    menuOverlay.classList.remove('active');
+}
+
+if (hamburgerMenu) {
+    hamburgerMenu.addEventListener('click', openSidebar);
+}
+
+if (closeMenu) {
+    closeMenu.addEventListener('click', closeSidebar);
+}
+
+if (menuOverlay) {
+    menuOverlay.addEventListener('click', closeSidebar);
+}
+
+// Close sidebar with Escape key
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+        closeSidebar();
+    }
+});
 // ========== LOAD DATA ==========
 async function loadData() {
     try {
@@ -53,6 +87,9 @@ async function loadData() {
         
         // Initialize with default config (IDs 1-100)
         applyDefaultConfig();
+        
+        // Add keyboard hint to body
+        addKeyboardHint();
     } catch (error) {
         console.error('Error loading JSON:', error);
         allCards = [
@@ -61,6 +98,16 @@ async function loadData() {
             { id: 3, chinese: "再见", pinyin: "zài jiàn", meaning: "Goodbye" }
         ];
         applyDefaultConfig();
+        addKeyboardHint();
+    }
+}
+
+function addKeyboardHint() {
+    if (!document.querySelector('.keyboard-hint')) {
+        const hint = document.createElement('div');
+        hint.className = 'keyboard-hint';
+        hint.innerHTML = '⌨️ ← → arrows | 0 to bookmark';
+        document.querySelector('.card-area').appendChild(hint);
     }
 }
 
@@ -128,6 +175,83 @@ function updateCardIdBadge() {
         cardIdBadge.style.display = 'inline-flex';
     } else {
         cardIdBadge.style.display = 'none';
+    }
+}
+function toggleBookmark() {
+    if (!currentDeckCards[currentCardIndex]) return;
+    
+    const cardToBookmark = currentDeckCards[currentCardIndex];
+    const bookmarkStar = document.querySelector('.bookmark-star');
+    
+    if (bookmarkedIndices.has(cardToBookmark.id)) {
+        bookmarkedIndices.delete(cardToBookmark.id);
+        bookmarkStar.innerText = '☆';
+        showBookmarkFeedback('unbookmarked');
+    } else {
+        bookmarkedIndices.add(cardToBookmark.id);
+        bookmarkStar.innerText = '★';
+        showBookmarkFeedback('bookmarked');
+    }
+    saveBookmarks();
+}
+
+function showBookmarkFeedback(action) {
+    // Remove any existing feedback
+    const existingFeedback = document.querySelector('.bookmark-feedback');
+    if (existingFeedback) existingFeedback.remove();
+    
+    // Create feedback element
+    const feedback = document.createElement('div');
+    feedback.className = 'bookmark-feedback';
+    feedback.innerHTML = action === 'bookmarked' ? '⭐ Bookmarked' : '☆ Unbookmarked';
+    
+    // Position it at bottom-right corner (small and out of the way)
+    feedback.style.position = 'fixed';
+    feedback.style.bottom = '20px';
+    feedback.style.right = '20px';
+    feedback.style.backgroundColor = 'rgba(0,0,0,0.6)';
+    feedback.style.color = '#f1c40f';
+    feedback.style.padding = '4px 12px';
+    feedback.style.borderRadius = '20px';
+    feedback.style.fontSize = '0.65rem';
+    feedback.style.fontWeight = '500';
+    feedback.style.backdropFilter = 'blur(8px)';
+    feedback.style.zIndex = '200';
+    feedback.style.pointerEvents = 'none';
+    feedback.style.fontFamily = 'monospace';
+    feedback.style.animation = 'fadeOutRight 1.2s ease forwards';
+    
+    // Add animation CSS if not exists
+    if (!document.querySelector('#bookmark-feedback-style')) {
+        const style = document.createElement('style');
+        style.id = 'bookmark-feedback-style';
+        style.textContent = `
+            @keyframes fadeOutRight {
+                0% { opacity: 1; transform: translateX(0); }
+                60% { opacity: 1; }
+                100% { opacity: 0; transform: translateX(10px); display: none; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(feedback);
+    
+    setTimeout(() => {
+        if (feedback && feedback.remove) feedback.remove();
+    }, 1000);
+}
+
+function updateBookmarkIcon() {
+    const bookmarkStar = document.querySelector('.bookmark-star');
+    if (currentDeckCards[currentCardIndex]) {
+        if (bookmarkedIndices.has(currentDeckCards[currentCardIndex].id)) {
+            bookmarkStar.innerText = '★';
+        } else {
+            bookmarkStar.innerText = '☆';
+        }
+    } else {
+        bookmarkStar.innerText = '☆';
     }
 }
 
@@ -201,7 +325,7 @@ function prevCard() {
 function recordCardTime() {
     if (cardStartTime && !missionPaused) {
         const elapsed = (Date.now() - cardStartTime) / 1000;
-        if (elapsed > 0 && cardTimes[currentCardIndex] !== undefined) {
+        if (elapsed > 0) {
             cardTimes[currentCardIndex] = elapsed;
         }
     }
@@ -253,22 +377,24 @@ function stopMissionTimers() {
 }
 
 // ========== MISSION MODE TOGGLE ==========
-missionModeToggle.addEventListener('change', (e) => {
-    missionMode = e.target.checked;
-    
-    if (missionMode) {
-        modeIndicator.innerHTML = '🎯 Mission Mode (Recording)';
-        startNewMission();
-    } else {
-        modeIndicator.innerHTML = '📖 Practice Mode';
-        if (missionActive) {
-            endMissionWithoutSaving();
+if (missionModeToggle) {
+    missionModeToggle.addEventListener('change', (e) => {
+        missionMode = e.target.checked;
+        
+        if (missionMode) {
+            modeIndicator.innerHTML = '🎯 Mission Mode (Recording)';
+            startNewMission();
+        } else {
+            modeIndicator.innerHTML = '📖 Practice Mode';
+            if (missionActive) {
+                endMissionWithoutSaving();
+            }
+            missionStats.style.display = 'none';
+            missionActive = false;
+            missionPaused = false;
         }
-        missionStats.style.display = 'none';
-        missionActive = false;
-        missionPaused = false;
-    }
-});
+    });
+}
 
 function startNewMission() {
     // End any existing mission
@@ -347,7 +473,7 @@ function completeMission() {
     // Record final card time
     if (cardStartTime && !missionPaused) {
         const elapsed = (Date.now() - cardStartTime) / 1000;
-        if (elapsed > 0 && cardTimes[currentCardIndex] !== undefined) {
+        if (elapsed > 0) {
             cardTimes[currentCardIndex] = elapsed;
         }
     }
@@ -356,12 +482,6 @@ function completeMission() {
     let totalTime = 0;
     for (let i = 0; i < cardTimes.length; i++) {
         if (cardTimes[i] > 0) totalTime += cardTimes[i];
-    }
-    
-    // Also include current card if not recorded
-    if (cardStartTime && !missionPaused && showDetails) {
-        const currentTime = (Date.now() - cardStartTime) / 1000;
-        if (currentTime > 0) totalTime += currentTime;
     }
     
     const record = {
@@ -401,34 +521,39 @@ function completeMission() {
 if (completeMissionBtn) completeMissionBtn.addEventListener('click', completeMission);
 
 // ========== APPLY CONFIGURATION ==========
-applyConfigBtn.addEventListener('click', () => {
-    const activeTab = document.querySelector('.customizer-tab.active').dataset.customTab;
-    let selectedCards = [];
-    let basisText = '';
-    
-    if (activeTab === 'range') {
-        const start = parseInt(document.getElementById('rangeStart').value) || 1;
-        const end = parseInt(document.getElementById('rangeEnd').value) || allCards.length;
-        selectedCards = allCards.filter(card => card.id >= start && card.id <= end);
-        basisText = `📊 Range: ${start} - ${end}`;
-    } else if (activeTab === 'list') {
-        const idsText = document.getElementById('customIdsList').value;
-        const ids = idsText.split(/[ ,\n]+/).filter(s => s.trim()).map(Number).filter(n => !isNaN(n));
-        selectedCards = allCards.filter(card => ids.includes(card.id));
-        basisText = `📝 Custom IDs: ${ids.length} cards`;
-    }
-    
-    if (selectedCards.length) {
-        applyConfiguration(selectedCards, basisText);
+if (applyConfigBtn) {
+    applyConfigBtn.addEventListener('click', () => {
+        const activeTab = document.querySelector('.customizer-tab.active').dataset.customTab;
+        let selectedCards = [];
+        let basisText = '';
         
-        // If mission mode is active, restart mission with new deck
-        if (missionMode && missionActive) {
-            startNewMission();
+        if (activeTab === 'range') {
+            const start = parseInt(document.getElementById('rangeStart').value) || 1;
+            const end = parseInt(document.getElementById('rangeEnd').value) || allCards.length;
+            selectedCards = allCards.filter(card => card.id >= start && card.id <= end);
+            basisText = `📊 Range: ${start} - ${end}`;
+        } else if (activeTab === 'list') {
+            const idsText = document.getElementById('customIdsList').value;
+            const ids = idsText.split(/[ ,\n]+/).filter(s => s.trim()).map(Number).filter(n => !isNaN(n));
+            selectedCards = allCards.filter(card => ids.includes(card.id));
+            basisText = `📝 Custom IDs: ${ids.length} cards`;
+        } else if (activeTab === 'smart') {
+            // Smart filters handled separately
+            return;
         }
-    } else {
-        alert('No valid cards selected!');
-    }
-});
+        
+        if (selectedCards.length) {
+            applyConfiguration(selectedCards, basisText);
+            
+            // If mission mode is active, restart mission with new deck
+            if (missionMode && missionActive) {
+                startNewMission();
+            }
+        } else {
+            alert('No valid cards selected!');
+        }
+    });
+}
 
 // Smart filters
 document.querySelectorAll('.smart-filter').forEach(btn => {
@@ -559,31 +684,22 @@ function getViewCount(chineseWord) {
     return cardReviewCount.get(chineseWord) || 0;
 }
 
-// ========== BOOKMARK ==========
-function toggleBookmark() {
-    if (!currentDeckCards[currentCardIndex]) return;
-    
-    const cardToBookmark = currentDeckCards[currentCardIndex];
-    
-    if (bookmarkedIndices.has(cardToBookmark.id)) {
-        bookmarkedIndices.delete(cardToBookmark.id);
-        bookmarkBtn.innerText = '☆';
-    } else {
-        bookmarkedIndices.add(cardToBookmark.id);
-        bookmarkBtn.innerText = '★';
-    }
-    saveBookmarks();
-}
-
-function updateBookmarkIcon() {
-    if (currentDeckCards[currentCardIndex]) {
-        bookmarkBtn.innerText = bookmarkedIndices.has(currentDeckCards[currentCardIndex].id) ? '★' : '☆';
-    } else {
-        bookmarkBtn.innerText = '☆';
-    }
-}
-
+// ========== BOOKMARK EVENT ==========
 if (bookmarkBtn) bookmarkBtn.addEventListener('click', toggleBookmark);
+
+// ========== KEYBOARD SHORTCUTS ==========
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        nextCard();
+    } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevCard();
+    } else if (e.key === '0') {
+        e.preventDefault();
+        toggleBookmark();
+    }
+});
 
 // ========== HISTORY UI ==========
 function updateHistoryUI() {
@@ -660,18 +776,7 @@ if (themeToggle) {
 if (prevBtn) prevBtn.onclick = prevCard;
 if (nextBtn) nextBtn.onclick = nextCard;
 
-// Keyboard navigation
-window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        nextCard();
-    } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        prevCard();
-    }
-});
-
-// Flashcard click also shows details (but we already have next button logic)
+// Flashcard click also shows details
 document.getElementById('flashcard')?.addEventListener('click', (e) => {
     if (!e.target.closest('.bookmark-icon')) {
         if (!showDetails) {
@@ -697,27 +802,6 @@ function loadBookmarks() {
     const saved = localStorage.getItem('speedcards_bookmarks');
     if (saved) { bookmarkedIndices = new Set(JSON.parse(saved)); }
 }
-
-// ========== MOBILE MENU ==========
-const menuToggle = document.getElementById('menuToggle');
-const menuOverlay = document.getElementById('menuOverlay');
-const sidebar = document.getElementById('sidebar');
-const closeMenu = document.getElementById('closeMenu');
-
-if (menuToggle) {
-    menuToggle.addEventListener('click', () => {
-        sidebar.classList.add('open');
-        menuOverlay.classList.add('active');
-    });
-}
-
-function closeSidebar() {
-    sidebar.classList.remove('open');
-    menuOverlay.classList.remove('active');
-}
-
-if (closeMenu) closeMenu.addEventListener('click', closeSidebar);
-if (menuOverlay) menuOverlay.addEventListener('click', closeSidebar);
 
 // ========== INIT ==========
 loadData();
